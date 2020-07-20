@@ -13,7 +13,7 @@
 	<script type="text/javascript" src="jquery/jquery-1.11.1-min.js "></script>
     <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 
-	<script type="text/javascript">
+	<script type="text/javascript" >
 		$(function () {
 			// 初始清空
 			$("#userAct").html("");
@@ -34,8 +34,8 @@
 		})
         // 登录操作
 		function login() {
-			 var userAct = $trim($("#userAct").val());
-			var userPwd = $trim($("#userPwd").val());
+			 var userAct =  $("#userAct").val();
+			var userPwd = $("#userPwd").val();
 			//alert(usrAct);
 			if(userAct==""){
 				$("#msg").html("用户名不能为空！");
@@ -45,8 +45,8 @@
 			}
 			// 如果填写了账户和密码后，就应该接下来在后台进行验证了；
 			$.ajax({
-				url: "",
-				date: {
+				url: "settings/user/login.do",
+				date:{
 					"userAct":userAct,
 					"userPwd":userPwd
 				},
@@ -59,6 +59,8 @@
 						window.location.href="workbench/index.html";
 					}else {
 						// 输出错误信息
+						$("#msg").html(data.msg);
+
 					}
 				}
 			})
@@ -88,7 +90,7 @@
 					</div>
 					<div class="checkbox"  style="position: relative;top: 30px; left: 10px;">
 						
-							<span id="msg"></span>
+							<span id="msg" style="color: red"></span>
 						
 					</div>
 					<button type="button" id="submitbtn" class="btn btn-primary btn-lg btn-block"  style="width: 350px; position: relative;top: 45px;">登录</button>

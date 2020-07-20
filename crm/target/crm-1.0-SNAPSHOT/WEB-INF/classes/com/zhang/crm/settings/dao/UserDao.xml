@@ -5,9 +5,9 @@
 
 <!--namespace:UserDao接口的全限定名称-->
 <mapper namespace="com.zhang.crm.settings.dao.UserDao">
-	
-	
-	
+    <select id="login" resultType="com.zhang.crm.settings.domain.User" >
+        select * from tbl_user where loginAct=#{userAct} and loginPwd=#{userPwd}
+    </select>
 </mapper>
 
 

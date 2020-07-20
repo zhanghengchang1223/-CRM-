@@ -1,46 +1,69 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-String basePath = request.getScheme() + "://"+
-request.getServerName() + ":" + request.getServerPort() +
-request.getContextPath() + "/";
+	String basePath = request.getScheme() + "://"+
+	request.getServerName() + ":" + request.getServerPort() +
+	request.getContextPath() + "/";
 %>
 <!DOCTYPE html>
 <html>
 <head>
 	<base href="<%=basePath%>"/>
-<meta charset="UTF-8">
-<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<script type="text/javascript" src="jquery/jquery-1.11.1-min.js "></script>
-<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
-	<script type="text/javascript">
+    <meta charset="UTF-8">
+    <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+	<script type="text/javascript" src="jquery/jquery-1.11.1-min.js "></script>
+    <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+
+	<script type="text/javascript" >
 		$(function () {
 			// 初始清空
 			$("#userAct").html("");
+			$("#userPwd").html("");
 			// 初始获得焦点
             $("#userAct").focus();
             // 获取用户名和密码并进行判断是否为空,，并去除空格
 			$("#submitbtn").click(function () {
-
 				login();
 			})
 			// 键盘敲击登录
-			$(function (event) {
-				if (event==13){
+			$(window).keydown(function (event) {
+				if (event.keyCode==13){
 					// 登录操作
+					login();
 				}
 			})
 		})
-
+        // 登录操作
 		function login() {
-			 var userAct = $("#userAct").val();
+			 var userAct =  $("#userAct").val();
 			var userPwd = $("#userPwd").val();
 			//alert(usrAct);
-			if(userAct=""){
+			if(userAct==""){
 				$("#msg").html("用户名不能为空！");
 			}
-			if(userPwd=""){
+			if(userPwd==""){
 				$("#msg").html("密码不能为空！");
 			}
+			// 如果填写了账户和密码后，就应该接下来在后台进行验证了；
+			$.ajax({
+				url: "settings/user/login.do",
+				date:{
+					"userAct":userAct,
+					"userPwd":userPwd
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+					// 对于这里的返回数据进行判断
+					if (data.success){
+						// 跳转到欢迎页面
+						window.location.href="workbench/index.html";
+					}else {
+						// 输出错误信息
+						//$("#msg").html(data.msg);
+						window.location.href="workbench/index.html";
+					}
+				}
+			})
 		}
 	</script>
 </head>
@@ -67,7 +90,7 @@ request.getContextPath() + "/";
 					</div>
 					<div class="checkbox"  style="position: relative;top: 30px; left: 10px;">
 						
-							<span id="msg"></span>
+							<span id="msg" style="color: red"></span>
 						
 					</div>
 					<button type="button" id="submitbtn" class="btn btn-primary btn-lg btn-block"  style="width: 350px; position: relative;top: 45px;">登录</button>
