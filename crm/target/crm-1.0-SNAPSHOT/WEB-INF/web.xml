@@ -11,11 +11,20 @@
 
     <filter>
         <filter-name>encodingFilter</filter-name>
-        <filter-class>com.zhang.crm.settings.web.EncodingFilter</filter-class>
+        <filter-class>com.zhang.crm.filter.EncodingFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>encodingFilter</filter-name>
         <url-pattern>*.do</url-pattern>   <!--这里注意不要加/，对于.do只有这一种写法-->
+    </filter-mapping>
+    <filter>
+        <filter-name>loginFilter</filter-name>
+        <filter-class>com.zhang.crm.filter.loginFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>loginFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+        <url-pattern>/index.jsp</url-pattern>
     </filter-mapping>
 
     <servlet>

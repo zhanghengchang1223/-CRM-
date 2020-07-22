@@ -1,4 +1,4 @@
-package com.zhang.crm.settings.web;
+package com.zhang.crm.filter;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-public class loginFilter  implements Filter {
+public class loginFilter implements Filter {
 
 
     @Override

@@ -57,12 +57,12 @@
 					// 对于这里的返回数据进行判断
 					if (data.success){
 						// 跳转到欢迎页面
-						window.location.href="workbench/index.html";
+						window.location.href="workbench/index.jsp";
 					}else {
 						// 输出错误信息
 						//$("#msg").html(data.msg);
 						// 这里现在还有问题，暂时这样
-						//window.location.href="workbench/index.html";
+						//window.location.href="workbench/index.jsp";
 					}
 				}
 			})
@@ -82,7 +82,7 @@
 			<div class="page-header">
 				<h1>登录</h1>
 			</div>
-			<form action="workbench/index.html" class="form-horizontal" role="form">
+			<form action="workbench/index.jsp" class="form-horizontal" role="form">
 				<div class="form-group form-group-lg">
 					<div style="width: 350px;">
 						<input class="form-control" type="text" placeholder="用户名" id="userAct"/>

@@ -11,7 +11,7 @@
 
     <filter>
         <filter-name>encodingFilter</filter-name>
-        <filter-class>com.zhang.crm.settings.web.EncodingFilter</filter-class>
+        <filter-class>com.zhang.crm.filter.EncodingFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>encodingFilter</filter-name>
@@ -19,12 +19,12 @@
     </filter-mapping>
     <filter>
         <filter-name>loginFilter</filter-name>
-        <filter-class>com.zhang.crm.settings.web.loginFilter</filter-class>
+        <filter-class>com.zhang.crm.filter.loginFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>loginFilter</filter-name>
         <url-pattern>*.do</url-pattern>
-        <url-pattern>/*.jsp</url-pattern>
+        <url-pattern>*.jsp</url-pattern>
     </filter-mapping>
 
     <servlet>
