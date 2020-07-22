@@ -35,6 +35,8 @@ public class UserServlet extends HttpServlet {
         // 获取前端传来的参数，账户，密码，ip
         String userAct = request.getParameter("userAct");
         String userPwd = request.getParameter("userPwd");
+        System.out.println("输入的账号密码："+userAct);
+        System.out.println("输入的账号密码："+userPwd);
         String ip = request.getRemoteAddr();
         // 将密码转换成密文形式
         //userPwd = MD5Util.getMD5(userPwd);

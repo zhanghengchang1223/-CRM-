@@ -17,6 +17,15 @@
         <filter-name>encodingFilter</filter-name>
         <url-pattern>*.do</url-pattern>   <!--这里注意不要加/，对于.do只有这一种写法-->
     </filter-mapping>
+    <filter>
+        <filter-name>loginFilter</filter-name>
+        <filter-class>com.zhang.crm.settings.web.loginFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>loginFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+        <url-pattern>/*.jsp</url-pattern>
+    </filter-mapping>
 
     <servlet>
         <servlet-name>UserServlet</servlet-name>

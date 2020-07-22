@@ -44,9 +44,10 @@
 				$("#msg").html("密码不能为空！");
 			}
 			// 如果填写了账户和密码后，就应该接下来在后台进行验证了；
+			// 这里的数据名称不能写错，例如不能把data写成date
 			$.ajax({
 				url: "settings/user/login.do",
-				date:{
+				data:{
 					"userAct":userAct,
 					"userPwd":userPwd
 				},
@@ -60,7 +61,8 @@
 					}else {
 						// 输出错误信息
 						//$("#msg").html(data.msg);
-						window.location.href="workbench/index.html";
+						// 这里现在还有问题，暂时这样
+						//window.location.href="workbench/index.html";
 					}
 				}
 			})

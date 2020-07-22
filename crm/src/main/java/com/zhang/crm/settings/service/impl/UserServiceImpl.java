@@ -35,8 +35,8 @@ public class UserServiceImpl implements UserService {
             String systime = DateTimeUtil.getSysTime();
             if (expireTime.compareTo(systime) < 0) {
                 throw new LoginException("此账号已失效！");
-            } else if (!allowIps.contains(ip)) {
-                throw new LoginException("此账号不在允许ip范围！");
+            //} else if (!allowIps.contains(ip)) {
+              //  throw new LoginException("此账号不在允许ip范围！");
                 // 这里将字符串放在前面防止了空指针的问题
             } else if ("0".equals(lockState)) {
                 throw new LoginException("此账号已锁定！");
