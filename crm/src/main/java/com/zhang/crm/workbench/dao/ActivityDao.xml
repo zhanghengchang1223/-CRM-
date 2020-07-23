@@ -8,6 +8,29 @@
      <select id="addUser" resultType="User">
          select * from tbl_user;
      </select>
+
+    <insert id="saveActivity" >
+        insert into tbl_activity(
+         id,
+         owner,
+         name,
+         startDate,
+         endDate,
+         cost,
+         description,
+         createTime
+        )
+        values (
+         #{id},
+         #{owner},
+         #{name},
+         #{startDate},
+         #{endDate},
+         #{cost},
+         #{description},
+         #{createTime}
+        )
+    </insert>
 </mapper>
 
 

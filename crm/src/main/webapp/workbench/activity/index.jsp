@@ -27,6 +27,15 @@ request.getContextPath() + "/";
 		 */
 		// 获取添加操作中市场活动模态窗口
 		$("#addBtn").click(function () {
+			// 添加时间控件，年月日
+			$(".time").datetimepicker({
+				minView: "month",
+				language:  'zh-CN',
+				format: 'yyyy-mm-dd',
+				autoclose: true,
+				todayBtn: true,
+				pickerPosition: "bottom-left"
+			});
 			// 打开模态窗口之前在后台中先获取所有用户数据，并使当前登录用户显示在默认下拉框中
 			$.ajax({
 				url: "workbench/activity/add.do",
@@ -34,16 +43,40 @@ request.getContextPath() + "/";
 				dataType:"json",
 				success:function (data) {
 					// 对于这里的返回数据进行判断
-					if (data.success){
-						$.each(List<User> function (i,n) {
-
-						})
-					}
+					$.each(data ,function (i,n) {
+						$("#create-marketActivityOwner").append("<option value="+n.id+">"+n.name+"</option>");
+						$("#create-marketActivityOwner").val("${user.id}");
+					})
 				}
 			});
 			// 打开模态窗口
 			$("#createActivityModal").modal(open);
 		})
+
+         $("#saveBtn").click(function () {
+			 $.ajax({
+				 url: "workbench/activity/save.do",
+				 data:{
+				 	"owner":$.trim($("#creat-owner").val()),
+					 "name":$.trim($("#creat-name").val()),
+					 "startDate":$.trim($("#creat-startDate").val()),
+					 "endDate":$.trim($("#creat-endDate").val()),
+					 "cost":$.trim($("#creat-cost").val()),
+					 "description":$.trim($("#creat-description").val())
+				 },
+				 type:"post",
+				 dataType:"json",
+				 success:function (data) {
+					 // 对于这里的返回数据进行判断
+					 if (data.success){
+						 $("#createActivityModal").modal(hide);
+					 }else {
+					 	alert("数据保存失败！");
+					 }
+
+				 }
+			 });
+		 })
 
 	});
 	
@@ -68,24 +101,24 @@ request.getContextPath() + "/";
 						<div class="form-group">
 							<label for="create-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-marketActivityOwner">
+								<select class="form-control" id="create-owner">
 
 								</select>
 							</div>
                             <label for="create-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="create-marketActivityName">
+                                <input type="text" class="form-control" id="create-name">
                             </div>
 						</div>
 						
 						<div class="form-group">
 							<label for="create-startTime" class="col-sm-2 control-label">开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-startTime">
+								<input type="text" class="form-control time" id="create-startDate" readonly>
 							</div>
-							<label for="create-endTime" class="col-sm-2 control-label">结束日期</label>
+							<label for="create-endTime" class="col-sm-2 control-label time">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-endTime">
+								<input type="text" class="form-control" id="create-endDate" readonly>
 							</div>
 						</div>
                         <div class="form-group">
@@ -98,7 +131,7 @@ request.getContextPath() + "/";
 						<div class="form-group">
 							<label for="create-describe" class="col-sm-2 control-label">描述</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="create-describe"></textarea>
+								<textarea class="form-control" rows="3" id="create-description"></textarea>
 							</div>
 						</div>
 						
@@ -107,7 +140,7 @@ request.getContextPath() + "/";
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+					<button type="button" class="btn btn-primary" id="saveBtn">保存</button>
 				</div>
 			</div>
 		</div>

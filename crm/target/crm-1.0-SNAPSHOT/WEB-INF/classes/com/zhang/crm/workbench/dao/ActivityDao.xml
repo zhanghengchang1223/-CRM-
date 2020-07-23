@@ -5,7 +5,32 @@
 
 <!--namespace:UserDao接口的全限定名称-->
 <mapper namespace="com.zhang.crm.workbench.dao.ActivityDao">
+     <select id="addUser" resultType="User">
+         select * from tbl_user;
+     </select>
 
+    <insert id="saveActivity" >
+        insert into tbl_activity(
+         id,
+         owner,
+         name,
+         startDate,
+         endDate,
+         cost,
+         description,
+         createTime
+        )
+        values (
+         #{id},
+         #{owner},
+         #{name},
+         #{startDate},
+         #{endDate},
+         #{cost},
+         #{description},
+         #{createTime}
+        )
+    </insert>
 </mapper>
 
 

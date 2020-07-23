@@ -60,7 +60,7 @@
 						window.location.href="workbench/index.jsp";
 					}else {
 						// 输出错误信息
-						//$("#msg").html(data.msg);
+						$("#msg").html(data.msg);
 						// 这里现在还有问题，暂时这样
 						//window.location.href="workbench/index.jsp";
 					}
