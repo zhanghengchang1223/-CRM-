@@ -9,8 +9,9 @@
   <typeAliases>
   
   	<package name="com.zhang.crm.settings.domain"/>
-  	
-  
+    <package name="com.zhang.crm.workbench.domain"/>
+
+
   </typeAliases>
   
   <environments default="development">
@@ -28,8 +29,9 @@
  
   <mappers>
    
-      <package name="com.zhang.crm.settings.dao"/>
-    
+    <package name="com.zhang.crm.settings.dao"/>
+    <package name="com.zhang.crm.workbench.dao"/>
+
   </mappers>
 </configuration>
 

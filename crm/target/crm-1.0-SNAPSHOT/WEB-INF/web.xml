@@ -24,13 +24,23 @@
     <filter-mapping>
         <filter-name>loginFilter</filter-name>
         <url-pattern>*.do</url-pattern>
-        <url-pattern>/index.jsp</url-pattern>
+        <url-pattern>*.jsp</url-pattern>
     </filter-mapping>
 
     <servlet>
         <servlet-name>UserServlet</servlet-name>
         <servlet-class>com.zhang.crm.settings.web.controller.UserServlet</servlet-class>
     </servlet>
+
+    <servlet>
+        <servlet-name>ActivityServlet</servlet-name>
+        <servlet-class>com.zhang.crm.workbench.controller.ActivityServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ActivityServlet</servlet-name>
+        <url-pattern>/workbench/activity/xxx.do</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/settings/user/login.do</url-pattern>
