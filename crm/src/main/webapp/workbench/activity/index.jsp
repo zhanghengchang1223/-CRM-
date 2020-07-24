@@ -44,32 +44,32 @@ request.getContextPath() + "/";
 				success:function (data) {
 					// 对于这里的返回数据进行判断
 					$.each(data ,function (i,n) {
-						$("#create-marketActivityOwner").append("<option value="+n.id+">"+n.name+"</option>");
-						$("#create-marketActivityOwner").val("${user.id}");
+						$("#create-owner").append("<option value="+n.id+">"+n.name+"</option>");
+						$("#create-owner").val("${user.id}");
 					})
 				}
 			});
 			// 打开模态窗口
-			$("#createActivityModal").modal(open);
+			$("#createActivityModal").modal("show");
 		})
 
          $("#saveBtn").click(function () {
 			 $.ajax({
 				 url: "workbench/activity/save.do",
 				 data:{
-				 	"owner":$.trim($("#creat-owner").val()),
-					 "name":$.trim($("#creat-name").val()),
-					 "startDate":$.trim($("#creat-startDate").val()),
-					 "endDate":$.trim($("#creat-endDate").val()),
-					 "cost":$.trim($("#creat-cost").val()),
-					 "description":$.trim($("#creat-description").val())
+				 	"owner":$.trim($("#create-owner").val()),
+					 "name":$.trim($("#create-name").val()),
+					 "startDate":$.trim($("#create-startDate").val()),
+					 "endDate":$.trim($("#create-endDate").val()),
+					 "cost":$.trim($("#create-cost").val()),
+					 "description":$.trim($("#create-description").val())
 				 },
 				 type:"post",
 				 dataType:"json",
 				 success:function (data) {
 					 // 对于这里的返回数据进行判断
 					 if (data.success){
-						 $("#createActivityModal").modal(hide);
+						 $("#createActivityModal").modal("hide");
 					 }else {
 					 	alert("数据保存失败！");
 					 }
@@ -116,9 +116,9 @@ request.getContextPath() + "/";
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control time" id="create-startDate" readonly>
 							</div>
-							<label for="create-endTime" class="col-sm-2 control-label time">结束日期</label>
+							<label for="create-endTime" class="col-sm-2 control-label ">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-endDate" readonly>
+								<input type="text" class="form-control time" id="create-endDate" readonly>
 							</div>
 						</div>
                         <div class="form-group">

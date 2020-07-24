@@ -2,16 +2,12 @@ package com.zhang.crm.settings.web.controller;
 
 import com.zhang.crm.settings.domain.User;
 
-import com.zhang.crm.settings.exception.LoginException;
 import com.zhang.crm.settings.service.UserService;
 import com.zhang.crm.settings.service.impl.UserServiceImpl;
-import com.zhang.crm.utils.MD5Util;
 import com.zhang.crm.utils.PrintJson;
 import com.zhang.crm.utils.ServiceFactory;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

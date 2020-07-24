@@ -46,12 +46,13 @@ public class ActivityServlet extends HttpServlet {
         //将参数保存在对象中
         Activity activity = new Activity();
         activity.setId(id);
-        activity.setId(owner);
-        activity.setId(name);
-        activity.setId(startDate);
-        activity.setId(endDate);
-        activity.setId(cost);
-        activity.setId(description);
+        activity.setOwner(owner);
+        activity.setName(name);
+        activity.setStartDate(startDate);
+        activity.setEndDate(endDate);
+        activity.setCost(cost);
+        activity.setDescription(description);
+        activity.setCreateTime(createTime);
 
         boolean flag= service.saveActivity(activity);
         PrintJson.printJsonFlag(response,flag);

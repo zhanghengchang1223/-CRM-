@@ -31,6 +31,10 @@
         <servlet-name>UserServlet</servlet-name>
         <servlet-class>com.zhang.crm.settings.web.controller.UserServlet</servlet-class>
     </servlet>
+    <servlet-mapping>
+        <servlet-name>UserServlet</servlet-name>
+        <url-pattern>/settings/user/login.do</url-pattern>
+    </servlet-mapping>
 
     <servlet>
         <servlet-name>ActivityServlet</servlet-name>
@@ -42,9 +46,6 @@
         <url-pattern>/workbench/activity/add.do</url-pattern>
         <url-pattern>/workbench/activity/save.do</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>UserServlet</servlet-name>
-        <url-pattern>/settings/user/login.do</url-pattern>
-    </servlet-mapping>
+
 
 </web-app>

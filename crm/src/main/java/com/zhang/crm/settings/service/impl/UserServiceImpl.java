@@ -13,7 +13,6 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
     // 这里会引入一个Dao对象
     private UserDao userDao = SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
-
     @Override
     public User login(String userAct, String userPwd, String ip) throws LoginException {
         /**
