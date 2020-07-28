@@ -33,10 +33,21 @@ public class ActivityServlet extends HttpServlet {
             saveActivity(requset,response);
         }else if ("/workbench/activity/pageList.do".equals(path)){
             pageList(requset,response);
+        }else if ("/workbench/activity/delete.do".equals(path)){
+            delete(requset,response);
         }
     }
 
+    private void delete(HttpServletRequest requset, HttpServletResponse response) {
+        // 获取前端传递的参数
+        String[] ids = requset.getParameterValues("id");
+        ActivityService service = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        boolean flag = service.delete(ids);
+        PrintJson.printJsonFlag(response,flag);
+    }
+
     private void pageList(HttpServletRequest requset, HttpServletResponse response) {
+        System.out.println("pageList方法执行");
         // 获取参数
         String owner=requset.getParameter("owner");
         String name=requset.getParameter("name");

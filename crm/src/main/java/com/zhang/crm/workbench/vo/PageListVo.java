@@ -4,15 +4,15 @@ import java.util.List;
 
 public class PageListVo<T> {
 
-    private int totle;
+    private int total;
     private List<T> activityList;
 
-    public int getTotle() {
-        return totle;
+    public int getTotal() {
+        return total;
     }
 
-    public void setTotle(int totle) {
-        this.totle = totle;
+    public void setTotal(int total) {
+        this.total = total;
     }
 
     public List<T> getActivityList() {

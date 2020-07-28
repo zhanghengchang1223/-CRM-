@@ -96,29 +96,81 @@ request.getContextPath() + "/";
 		    // 将搜索框汇总的内容放入隐藏域中hidden
 			$("#hidden-owner").val($.trim($("#search-owner").val()));
 			$("#hidden-name").val($.trim($("#search-name").val()));
-			$("#hidden-startDate").$.trim($("#search-startDate").val());
-			$("#hidden-endDate").$.trim($("#search-endDate").val());
+			$("#hidden-startDate").val($.trim($("#search-startDate").val()));
+			$("#hidden-endDate").val($.trim($("#search-endDate").val()));
 			pageList(1,4);
-		})
+		});
 
 		// 对全选框进行事件的绑定
 		$("#quanCheckbox").click(function () {
             $("#dancheckbox").prop("checked",this.checked)
 		})
 		// 对于表中的复选框进行事件的绑定，因为是动态的不能使用普通的方式
-		//语法：￥（需要绑定的元素的有效的外层元素）.on(绑定事件的方式，需要绑定的元素的jquery对象，回调函数)
+		//语法：$（需要绑定的元素的有效的外层元素）.on(绑定事件的方式，需要绑定的元素的jquery对象，回调函数)
 		$("#activitybody").on("click",$("#dancheckbox"),function () {
-              $("#quanCheckbox").prop("checkd",$("#dancheckbox").length==$("#dancheckbox:checked").length);
+              $("#quanCheckbox").prop("checked",$("#dancheckbox").length==$("#dancheckbox:checked").length);
 		})
 
+		/**
+		 * 这里进行删除操作
+		 * 删除操作会关联市场活动备注表，根据外键进行判断，这里因为可能会勾选很多，不能直接使用json数据传递
+		 * url:"workbench/activity/delete.do"?id=xxxx&id=xxxxxx;
+		 */
+		$("#deleteBtn").click(function () {
+
+			// 首先判断复选框是否选中
+			var $checkbox = $("#dancheckbox:checked");
+			if ($checkbox.length==0){
+				alert("请选择要删除的对象！");
+			}else {
+				// 删除前进行判断
+				if (confirm("是否确定删除？")){
+					// 进行ajax请求
+					var param = "";
+					for (var i=0;i<$checkbox.length;i++){
+						param += "id="+$checkbox[i].value;
+						if (i<$checkbox.length-1){
+							param += "&";
+						}
+					}
+					$.ajax({
+						url: "workbench/activity/delete.do",
+						data:param,
+						type:"get",
+						dataType:"json",
+						success:function (data) {
+							// 删除成功显示，并进行页面的刷新；
+							if (data.success){
+								alert("删除成功！");
+								pageList(1,4);
+							}else {
+								alert("删除失败！");
+							}
+						}
+					});
+				}
+				//alert(param);
+			}
+		})
+
+
+
 	});
-	// 定义pageList函数
+	// 定义pageList函数，进行分页操作
 	function pageList(pageNo,pageSize) {
+		// 每次执行都会对全选框进行刷新
+		$("#quanCheckbox").prop("checkd",false);
+		//alert("pageList执行了");
 		// 查询前将隐藏域中的值重新输入到搜索框
+		/**
+		 * 这里犯了一个错误，缺少一个括号，接下来就不执行了.....
+		 * 还不会去报错误的信息！！！！
+		 */
+
 		$("#search-owner").val($.trim($("#hidden-owner").val()));
 		$("#search-name").val($.trim($("#hidden-name").val()));
-		$("#search-startDate").$.trim($("#hidden-startDate").val());
-		$("#search-endDate").$.trim($("#hidden-endDate").val());
+		$("#search-startDate").val($.trim($("#hidden-startDate").val()));
+		$("#search-endDate").val($.trim($("#hidden-endDate").val()));
 		// 进行ajax请求
 		$.ajax({
 			url: "workbench/activity/pageList.do",
@@ -148,14 +200,15 @@ request.getContextPath() + "/";
 				})
 				// 市场活动表显示
 				$("#activitybody").html(html);
+				//$("#activitybody").html('<td>能不能显示？</td>');
 				// 进行分页操作
 				// 计算总页数
-				var tolalPages = data.total%pageSize==0?data.total/pageSize:parseInt(data.total/pageSize)+1;
+				var totalPages = data.total%pageSize==0?data.total/pageSize:parseInt(data.total/pageSize)+1;
 				$("#activityPage").bs_pagination({
 					currentPage: pageNo, // 页码
 					rowsPerPage: pageSize, // 每页显示的记录条数
 					maxRowsPerPage: 20, // 每页最多显示的记录条数
-					totalPages: tolalPages, // 总页数
+					totalPages: totalPages, // 总页数
 					totalRows: data.total, // 总记录条数
 
 					visiblePageLinks: 3, // 显示几个卡片
@@ -198,24 +251,24 @@ request.getContextPath() + "/";
 					<form class="form-horizontal" role="form" id="activityform">
 					
 						<div class="form-group">
-							<label for="create-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-owner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-owner">
 
 								</select>
 							</div>
-                            <label for="create-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
+                            <label for="create-name" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="create-name">
                             </div>
 						</div>
 						
 						<div class="form-group">
-							<label for="create-startTime" class="col-sm-2 control-label">开始日期</label>
+							<label for="create-startDate" class="col-sm-2 control-label">开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control time" id="create-startDate" readonly>
 							</div>
-							<label for="create-endTime" class="col-sm-2 control-label ">结束日期</label>
+							<label for="create-endDate" class="col-sm-2 control-label ">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control time" id="create-endDate" readonly>
 							</div>
@@ -228,7 +281,7 @@ request.getContextPath() + "/";
                             </div>
                         </div>
 						<div class="form-group">
-							<label for="create-describe" class="col-sm-2 control-label">描述</label>
+							<label for="create-description" class="col-sm-2 control-label">描述</label>
 							<div class="col-sm-10" style="width: 81%;">
 								<textarea class="form-control" rows="3" id="create-description"></textarea>
 							</div>
@@ -362,7 +415,7 @@ request.getContextPath() + "/";
 				<div class="btn-group" style="position: relative; top: 18%;">
 				  <button type="button" class="btn btn-primary" id="addBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" id="editBtn"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				
 			</div>
