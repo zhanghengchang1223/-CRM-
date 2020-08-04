@@ -15,4 +15,12 @@ public interface ActivityDao {
     int getTotleByCondition(Map<String, Object> pageMap);
     // 根据条件查询出的市场活动列表
     List<Activity> getActivityListByCondition(Map<String, Object> pageMap);
+    // 根据ID值进行删除
+    int delete(String[] ids);
+    // 根据ID值进行查询
+    Activity getById(String id);
+
+    int updateInfo(Activity activity);
+
+    Activity detail(String id);
 }

@@ -8,7 +8,13 @@
     <select id="login" resultType="com.zhang.crm.settings.domain.User" >
         select * from tbl_user where loginAct=#{userAct} and loginPwd=#{userPwd}
     </select>
+
+    <select id="getUserList" resultType="User">
+        select * from tbl_user
+    </select>
 </mapper>
+
+
 
 
 

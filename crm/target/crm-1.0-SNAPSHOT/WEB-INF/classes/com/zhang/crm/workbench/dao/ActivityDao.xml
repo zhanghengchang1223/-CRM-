@@ -5,6 +5,52 @@
 
 <!--namespace:UserDao接口的全限定名称-->
 <mapper namespace="com.zhang.crm.workbench.dao.ActivityDao">
+
+    <select id="detail" resultType="Activity">
+        select
+        a.id,
+        u.name as owner,
+        a.name,
+        a.startDate,
+        a.endDate,
+        a.cost,
+        a.description,
+        a.createBy,
+        a.createTime,
+        a.editTime,
+        a.editBy
+
+        from tbl_activity a
+        join tbl_user u
+        on a.owner = u.id
+        where a.id=#{id}
+
+    </select>
+    <update id="updateInfo" >
+        update tbl_activity set
+        owner=#{owner},
+        name=#{name},
+        startDate=#{startDate},
+        endDate=#{endDate},
+        cost=#{cost},
+        description=#{description},
+        editTime=#{editTime},
+        editBy=#{editBy}
+
+        where id=#{id}
+    </update>
+
+    <select id="getById" resultType="Activity">
+        select * from tbl_activity where id = #{id};
+    </select>
+
+    <delete id="delete">
+        delete from tbl_activity
+        where id in
+        <foreach collection="array" item="aid" open="(" close=")" separator=",">
+            #{aid}
+        </foreach>;
+    </delete>
      <select id="addUser" resultType="User">
          select * from tbl_user;
      </select>

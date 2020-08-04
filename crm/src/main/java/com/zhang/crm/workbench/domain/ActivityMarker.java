@@ -2,12 +2,12 @@ package com.zhang.crm.workbench.domain;
 
 public class ActivityMarker {
     private String id;            //市场活动id
-    private String noteContent;   //
+    private String noteContent;
     private String createTime;
     private String createBy;
     private String editTime;
     private String editBy;
-    private String editFlag;      //
+    private String editFlag;
     private String activityId;
 
     public String getId() {

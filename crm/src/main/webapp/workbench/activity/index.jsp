@@ -77,6 +77,7 @@ request.getContextPath() + "/";
 						 $("#createActivityModal").modal("hide");
 						 $("#activityform")[0].reset();
 						 pageList(1,4);
+						 alert("保存数据成功!");
 					 }else {
 					 	alert("数据保存失败！");
 					 }
@@ -125,7 +126,7 @@ request.getContextPath() + "/";
 			}else {
 				// 删除前进行判断
 				if (confirm("是否确定删除？")){
-					// 进行ajax请求
+					// 进行ajax请求,下面是请求的参数的拼接
 					var param = "";
 					for (var i=0;i<$checkbox.length;i++){
 						param += "id="+$checkbox[i].value;
@@ -151,8 +152,84 @@ request.getContextPath() + "/";
 				}
 				//alert(param);
 			}
-		})
+		});
 
+		// 进行修改功能的实现，修改功能按钮按下时会先过一遍后台的，跟增加功能相似
+        // 会想后台请求两部分信息，根据ID进行用户列表的请求，还有就是市场活动表信息的请求
+        // 这里为了区分哪条记录被删除会有一个隐藏的ID
+        $("#editBtn").click(function () {
+            // 对于勾选框进行判断
+            var $checkbox = $("#dancheckbox:checked");
+            if ($checkbox.length==0){
+                alert("请选择要修改的对象！");
+            }else if($checkbox.length>1){
+                alert("只能进行一个单选框的选择，请重新选择！");
+            }else {
+                var id = $checkbox.val();   // 获取选择的id值
+                // 对后台发出ajax请求
+                $.ajax({
+                    url: "workbench/activity/update.do",
+                    data:{"id":id},
+                    type:"get",
+                    dataType:"json",
+                    success:function (data) {
+                          // 这里会接收两个来自后台的数据
+                          // ulist:表示用户表的信息；alist:市场活动表的信息
+                        $.each(data.ulist,function (i,n) {
+                            $("#edit-owner").append("<option value="+n.id+">"+n.name+"</option>");
+                        });
+                        // 处理activity
+                        $("#edit-name").val(data.alist.name);
+                        $("#edit-startDate").val(data.alist.startDate);
+                        $("#edit-endDate").val(data.alist.endDate);
+                        $("#edit-description").val(data.alist.description);
+                        $("#edit-owner").val(data.alist.owner);
+                        $("#edit-cost").val(data.alist.cost);
+                        // 这里放置id，不显示，告诉后台修改的是那一条
+                        $("#edit-id").val(data.alist.id);
+
+                        // 这时打开模态窗口
+                        $("#editActivityModal").modal("show");
+                    }
+                });
+            }
+        })
+       // 进行市场活动修改操作，代码直接copy添加操作
+        $("#updateBtn").click(function () {
+            $.ajax({
+                url:"workbench/activity/updateInfo.do",
+                data:{
+                    "id":$.trim($("#edit-id").val()),
+                    "owner":$.trim($("#edit-owner").val()),
+                    "name":$.trim($("#edit-name").val()),
+                    "startDate":$.trim($("#edit-startDate").val()),
+                    "endDate":$.trim($("#edit-endDate").val()),
+                    "cost":$.trim($("#edit-cost").val()),
+                    "description":$.trim($("#edit-description").val())
+                },
+                type:"post",
+                dataType:"json",
+                success:function (data) {
+                    // 对于这里的返回数据进行判断
+                    if (data.success){
+                        // 关闭窗口并清空，在jquery中没有reset方法的，要转成DOM对象
+                        $("#editActivityModal").modal("hide");
+                        //$("#activityform")[0].reset();
+                        pageList(1,4);
+                        alert("修改数据成功!");
+                    }else {
+                        alert("数据保存失败！");
+                    }
+
+                }
+            });
+
+        })
+		$("#closeBtn").click(function () {
+			$("#editActivityModal").modal("hide");
+			$("#activityform")[0].reset();
+			pageList(1,4);
+		})
 
 
 	});
@@ -192,7 +269,7 @@ request.getContextPath() + "/";
 
 				    html +='<tr class="active">';
 					html +='<td><input type="checkbox" id="dancheckbox" value="'+n.id+'"/></td>';
-					html +='<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'detail.html\'">'+n.name+'</a></td>';
+					html +='<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.do?id='+n.id+'\'">'+n.name+'</a></td>';
 					html +='<td>'+n.owner+'</td>';
 					html +='<td>'+n.startDate+'</td>';
 					html +='<td>'+n.endDate+'</td>';
@@ -277,7 +354,7 @@ request.getContextPath() + "/";
 
                             <label for="create-cost" class="col-sm-2 control-label">成本</label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="create-cost">
+                                <input type="text" class="form-control" id="create-cost"/>
                             </div>
                         </div>
 						<div class="form-group">
@@ -311,44 +388,42 @@ request.getContextPath() + "/";
 				<div class="modal-body">
 				
 					<form class="form-horizontal" role="form">
-					
+                        <input type="hidden" id="edit-id"/>
 						<div class="form-group">
-							<label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="edit-owner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="edit-marketActivityOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+								<select class="form-control" id="edit-owner">
+
 								</select>
 							</div>
-                            <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
+                            <label for="edit-name" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-marketActivityName" value="发传单">
+                                <input type="text" class="form-control" id="edit-name" />
                             </div>
 						</div>
 
 						<div class="form-group">
-							<label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
+							<label for="edit-startDate" class="col-sm-2 control-label">开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-startTime" value="2020-10-10">
+								<input type="text" class="form-control time" id="edit-startDate" />
 							</div>
-							<label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
+							<label for="edit-endDate" class="col-sm-2 control-label">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-endTime" value="2020-10-20">
+								<input type="text" class="form-control time" id="edit-endDate" />
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="edit-cost" class="col-sm-2 control-label">成本</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-cost" value="5,000">
+								<input type="text" class="form-control" id="edit-cost"/>
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
+							<label for="edit-description" class="col-sm-2 control-label">描述</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="edit-describe">市场活动Marketing，是指品牌主办或参与的展览会议与公关市场活动，包括自行主办的各类研讨会、客户交流会、演示会、新产品发布会、体验会、答谢会、年会和出席参加并布展或演讲的展览会、研讨会、行业交流会、颁奖典礼等</textarea>
+								<textarea class="form-control" rows="3" id="edit-description"></textarea>
 							</div>
 						</div>
 						
@@ -356,8 +431,8 @@ request.getContextPath() + "/";
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+					<button type="button" class="btn btn-default"  id="closeBtn">关闭</button>
+					<button type="button" class="btn btn-primary" id="updateBtn">更新</button>
 				</div>
 			</div>
 		</div>
