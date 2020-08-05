@@ -26,6 +26,10 @@
         <url-pattern>*.do</url-pattern>
         <url-pattern>*.jsp</url-pattern>
     </filter-mapping>
+    <!--添加监听器-->
+    <listener>
+        <listener-class>com.zhang.crm.listener.SystemInitListener</listener-class>
+    </listener>
 
     <servlet>
         <servlet-name>UserServlet</servlet-name>
@@ -41,6 +45,7 @@
         <servlet-class>com.zhang.crm.workbench.controller.ActivityServlet</servlet-class>
     </servlet>
 
+
     <servlet-mapping>
         <servlet-name>ActivityServlet</servlet-name>
         <url-pattern>/workbench/activity/add.do</url-pattern>
@@ -53,5 +58,15 @@
         <url-pattern>/workbench/activity/remarkContentList.do</url-pattern>
         <url-pattern>/workbench/activity/remarkSave.do</url-pattern>
 
+    </servlet-mapping>
+
+    <!--线索-->
+    <servlet>
+        <servlet-name>ClueServlet</servlet-name>
+        <servlet-class>com.zhang.crm.workbench.controller.ClueServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ClueServlet</servlet-name>
+        <url-pattern>/workbench/clue/getUserList.do</url-pattern>
     </servlet-mapping>
 </web-app>

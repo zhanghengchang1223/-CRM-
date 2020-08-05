@@ -200,7 +200,7 @@ public class ActivityServlet extends HttpServlet {
         boolean flag= service.saveActivity(activity);
         PrintJson.printJsonFlag(response,flag);
     }
-
+    // 获取用户列表
     private void addUser(HttpServletRequest requset, HttpServletResponse response) {
         ActivityService service = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
         List<User> userList = service.addUser();

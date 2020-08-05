@@ -26,6 +26,10 @@
         <url-pattern>*.do</url-pattern>
         <url-pattern>*.jsp</url-pattern>
     </filter-mapping>
+    <!--添加监听器-->
+    <listener>
+        <listener-class>com.zhang.crm.listener.SystemInitListener</listener-class>
+    </listener>
 
     <servlet>
         <servlet-name>UserServlet</servlet-name>
