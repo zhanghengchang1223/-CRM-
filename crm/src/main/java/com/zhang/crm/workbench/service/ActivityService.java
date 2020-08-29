@@ -26,4 +26,6 @@ public interface ActivityService {
     List<ActivityMarker> remarkContentList(String id);
 
     boolean remarkSave(ActivityMarker ac);
+
+    List<Activity> detailList(String clueId);
 }

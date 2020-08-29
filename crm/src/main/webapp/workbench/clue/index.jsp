@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 String basePath = request.getScheme() + "://"+
 request.getServerName() + ":" + request.getServerPort() +
@@ -21,10 +22,158 @@ request.getContextPath() + "/";
 <script type="text/javascript">
 
 	$(function(){
-		
-		
-		
+		pageList(1,2);
+		// 点击创建按钮，给创建按钮绑定事件，打开模态窗口前，先查询数据库中的用户列表
+		$("#createClue").click(function () {
+			// 向后台发送ajax请求，不需要发送数据
+			$.ajax({
+				url: "workbench/clue/getUserList.do",
+				type:"get",
+				dataType:"json",
+				success:function (data) {
+					// 返回的数据是用户列表
+					// 进行下拉框字符串拼接
+					var html = "<option></option>";
+					// 遍历用户列表
+					$.each(data,function (i,n) {
+                         html+="<option value='"+n.id+"'>"+n.name+"</option>";
+                         $("#create-Owner").html(html);
+                         // 默认显示当前用户
+						 var id = n.id;
+						 $("#create-Owner").val(id);
+						 $("#createClueModal").modal("show");
+						// 添加时间控件，年月日
+						$(".time").datetimepicker({
+							minView: "month",
+							language: 'zh-CN',
+							format: 'yyyy-mm-dd',
+							autoclose: true,
+							todayBtn: true,
+							pickerPosition: "top-left"  // 显示位置
+						});
+					})
+				}
+			});
+		});
+
+		// 进行客户添加操作，点击保存按钮，将输入的数据通过ajax进行传输到后台
+       $("#saveBtn").click(function () {
+		   // 向后台发送ajax请求，不需要发送数据
+		   $.ajax({
+			   url: "workbench/clue/saveClue.do",
+			   data:{
+				   //"id":$("#create-").val(),
+				   "fullname":$("#create-fullname").val(),
+				   "appellation":$("#create-appellation").val(),
+				   "owner":$("#create-owner").val(),
+				   "company":$("#create-company").val(),
+				   "job":$("#create-job").val(),
+				   "email":$("#create-email").val(),
+				   "phone":$("#create-phone").val(),
+				   "website":$("#create-website").val(),
+				   "mphone":$("#create-mphone").val(),
+				   "state":$("#create-state").val(),
+				   "source":$("#create-source").val(),
+				   "createBy":$("#create-createBy").val(),
+				   "createTime":$("#create-createTime").val(),
+				   "description":$("#create-description").val(),
+				   "contactSummary":$("#create-contactSummary").val()
+			   },
+			   type:"post",
+			   dataType:"json",
+			   success:function (data) {
+                    // 返回就是成功或是失败
+				   if (data.success){
+				   	  $("#createClueModal").modal("hide");
+				   	  pageList(1,2);
+				   }else {
+				   	  alert("保存信息失败！");
+				   }
+			   }
+		   });
+	   });
+
+
 	});
+	// 定义pageList函数，进行分页操作
+	function pageList(pageNo,pageSize) {
+		// 每次执行都会对全选框进行刷新
+		//$("#quanCheckbox").prop("checkd",false);
+		//alert("pageList执行了");
+		// 查询前将隐藏域中的值重新输入到搜索框
+		/**
+		 * 这里犯了一个错误，缺少一个括号，接下来就不执行了.....
+		 * 还不会去报错误的信息！！！！
+		 */
+
+		/*
+		从搜索框框中的内容放到隐藏域并取出来
+		$("#search-owner").val($.trim($("#hidden-owner").val()));
+		$("#search-name").val($.trim($("#hidden-name").val()));
+		$("#search-startDate").val($.trim($("#hidden-startDate").val()));
+		$("#search-endDate").val($.trim($("#hidden-endDate").val()));
+		*/
+		// 进行ajax请求
+		$.ajax({
+			url: "workbench/clue/pageList.do",
+			data:{
+				"pageNo":pageNo,
+				"pageSize":pageSize
+				/*
+				"owner":$.trim($("#search-owner").val()),
+				"name":$.trim($("#search-name").val()),
+				"startDate":$.trim($("#search-startDate").val()),
+				"endDate":$.trim($("#search-endDate").val()),*/
+			},
+			type:"get",
+			dataType:"json",
+			success:function (data) {
+               //alert("判断是否返回结果");
+				var html="";
+				// 对于这里的返回数据进行判断
+				$.each(data,function (i,n) {
+
+				    html += '<tr>';
+					html += '<td><input type="checkbox" /></td>';
+					html += '<td><a style="text-decoration: none; cursor: pointer" onclick="window.location.href=\'workbench/clue/detail.do?id='+n.id+'\'">'+n.fullname+'</a></td>';
+					html += '<td>'+n.company+'</td>';
+					html += '<td>'+n.phone+'</td>';
+					html += '<td>'+n.mphone+'</td>';
+					html += '<td>'+n.source+'</td>';
+					html += '<td>'+n.owner+'</td>';
+					html += '<td>'+n.state+'</td>';
+					html += '</tr>';
+				})
+				// 市场活动表显示
+				$("#clue-tbody").html(html);
+				//$("#activitybody").html('<td>能不能显示？</td>');
+				// 进行分页操作
+				// 计算总页数
+				var totalPages = data.total%pageSize==0?data.total/pageSize:parseInt(data.total/pageSize)+1;
+				$("#cluePage").bs_pagination({
+					currentPage: pageNo, // 页码
+					rowsPerPage: pageSize, // 每页显示的记录条数
+					maxRowsPerPage: 20, // 每页最多显示的记录条数
+					totalPages: totalPages, // 总页数
+					totalRows: data.total, // 总记录条数
+
+					visiblePageLinks: 3, // 显示几个卡片
+
+					showGoToPage: true,
+					showRowsPerPage: true,
+					showRowsInfo: true,
+					showRowsDefaultInfo: true,
+
+					onChangePage : function(event, data){
+						pageList(data.currentPage , data.rowsPerPage);
+					}
+				});
+
+			}
+		});
+
+	}
+
 	
 </script>
 </head>
@@ -44,12 +193,10 @@ request.getContextPath() + "/";
 					<form class="form-horizontal" role="form">
 					
 						<div class="form-group">
-							<label for="create-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-Owner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-clueOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+								<select class="form-control" id="create-Owner">
+
 								</select>
 							</div>
 							<label for="create-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
@@ -59,20 +206,18 @@ request.getContextPath() + "/";
 						</div>
 						
 						<div class="form-group">
-							<label for="create-call" class="col-sm-2 control-label">称呼</label>
+							<label for="create-appellation" class="col-sm-2 control-label">称呼</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-call">
+								<select class="form-control" id="create-appellation">
 								  <option></option>
-								  <option>先生</option>
-								  <option>夫人</option>
-								  <option>女士</option>
-								  <option>博士</option>
-								  <option>教授</option>
+								   <c:forEach items="${appellation}" var="appl">
+									   <option value="${appl.value}">${appl.text}</option>
+								   </c:forEach>
 								</select>
 							</div>
-							<label for="create-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-fullname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-surname">
+								<input type="text" class="form-control" id="create-fullname">
 							</div>
 						</div>
 						
@@ -103,17 +248,13 @@ request.getContextPath() + "/";
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="create-mphone">
 							</div>
-							<label for="create-status" class="col-sm-2 control-label">线索状态</label>
+							<label for="create-state" class="col-sm-2 control-label">线索状态</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-status">
+								<select class="form-control" id="create-state">
 								  <option></option>
-								  <option>试图联系</option>
-								  <option>将来联系</option>
-								  <option>已联系</option>
-								  <option>虚假线索</option>
-								  <option>丢失线索</option>
-								  <option>未联系</option>
-								  <option>需要条件</option>
+									<c:forEach items="${clueState}" var="c">
+										<option value="${c.value}">${c.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 						</div>
@@ -123,29 +264,18 @@ request.getContextPath() + "/";
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-source">
 								  <option></option>
-								  <option>广告</option>
-								  <option>推销电话</option>
-								  <option>员工介绍</option>
-								  <option>外部介绍</option>
-								  <option>在线商场</option>
-								  <option>合作伙伴</option>
-								  <option>公开媒介</option>
-								  <option>销售邮件</option>
-								  <option>合作伙伴研讨会</option>
-								  <option>内部研讨会</option>
-								  <option>交易会</option>
-								  <option>web下载</option>
-								  <option>web调研</option>
-								  <option>聊天</option>
+									<c:forEach items="${source}" var="s">
+										<option value="${s.value}">${s.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 						</div>
 						
 
 						<div class="form-group">
-							<label for="create-describe" class="col-sm-2 control-label">线索描述</label>
+							<label for="create-description" class="col-sm-2 control-label">线索描述</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="create-describe"></textarea>
+								<textarea class="form-control" rows="3" id="create-description"></textarea>
 							</div>
 						</div>
 						
@@ -161,7 +291,7 @@ request.getContextPath() + "/";
 							<div class="form-group">
 								<label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
 								<div class="col-sm-10" style="width: 300px;">
-									<input type="text" class="form-control" id="create-nextContactTime">
+									<input type="text" class="form-control time" id="create-nextContactTime">
 								</div>
 							</div>
 						</div>
@@ -181,7 +311,7 @@ request.getContextPath() + "/";
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+					<button type="button" class="btn btn-primary" id="saveBtn">保存</button>
 				</div>
 			</div>
 		</div>
@@ -445,9 +575,9 @@ request.getContextPath() + "/";
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 40px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createClueModal"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-primary" id="createClue"><span class="glyphicon glyphicon-plus"></span> 创建</button>
+				  <button type="button" class="btn btn-default" id="editClue"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
+				  <button type="button" class="btn btn-danger" id="deleteClue"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				
 				
@@ -466,8 +596,8 @@ request.getContextPath() + "/";
 							<td>线索状态</td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
+					<tbody id="clue-tbody">
+						<%--<tr>
 							<td><input type="checkbox" /></td>
 							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/clue/detail.jsp';">李四先生</a></td>
 							<td>动力节点</td>
@@ -486,12 +616,15 @@ request.getContextPath() + "/";
                             <td>广告</td>
                             <td>zhangsan</td>
                             <td>已联系</td>
-                        </tr>
+                        </tr>--%>
 					</tbody>
 				</table>
 			</div>
-			
-			<div style="height: 50px; position: relative;top: 60px;">
+
+            <div>
+			<div id="cluePage"></div>
+			</div>
+			<%--<div style="height: 50px; position: relative;top: 60px;">
 				<div>
 					<button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
 				</div>
@@ -524,7 +657,7 @@ request.getContextPath() + "/";
 						</ul>
 					</nav>
 				</div>
-			</div>
+			</div>--%>
 			
 		</div>
 		

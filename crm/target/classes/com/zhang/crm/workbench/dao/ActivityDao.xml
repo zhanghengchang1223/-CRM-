@@ -6,6 +6,27 @@
 <!--namespace:UserDao接口的全限定名称-->
 <mapper namespace="com.zhang.crm.workbench.dao.ActivityDao">
 
+    <select id="detailList" resultType="Activity">
+        select
+        tcar.id as id,
+        u.name as owner,
+        a.name,
+        a.startDate,
+        a.endDate,
+        a.cost,
+        a.description,
+        a.createBy,
+        a.createTime,
+        a.editTime,
+        a.editBy
+        from tbl_activity a
+        join tbl_clue_activity_relation tcar
+        on a.id=tcar.activityId
+        join tbl_user u
+        on a.owner=u.id
+        where tcar.clueId=#{clueId}
+    </select>
+
     <select id="detail" resultType="Activity">
         select
         a.id,

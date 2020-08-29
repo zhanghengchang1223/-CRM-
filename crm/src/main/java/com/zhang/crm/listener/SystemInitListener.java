@@ -25,6 +25,7 @@ public class SystemInitListener implements ServletContextListener {
         // 取出map中的key
         Set<String> set = map.keySet();
         for (String key:set){
+            System.out.println("key====>"+key);
             application.setAttribute(key,map.get(key));
         }
     }
